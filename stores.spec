@@ -1,0 +1,3 @@
+ItemCollection:
+  elements:
+    $list: string
