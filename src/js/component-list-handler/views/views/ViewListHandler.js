@@ -1,4 +1,4 @@
-import {e, View} from '@flexio-oss/hotballoon'
+import {e, View, RECONCILIATION_RULES} from '@flexio-oss/hotballoon'
 
 
 export class ViewListHandler extends View {
@@ -30,6 +30,7 @@ export class ViewListHandler extends View {
         list.push(
           this.html(
             e(`div#${this.__idPrefix}-${element}`)
+              .reconciliationRules(RECONCILIATION_RULES.BYPASS)
           )
         )
       }
