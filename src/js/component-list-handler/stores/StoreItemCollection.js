@@ -22,7 +22,6 @@ export class StoreItemCollection {
     assertType(TypeCheck.isComponentContext(componentContext),
       'StoreExecutions:build: `componentContext` should be a ComponentContext'
     )
-    console.log(proxyStoreItems.state().data())
     return new StoreItemCollection(
       componentContext.addStore(
         new InMemoryStoreBuilder()
