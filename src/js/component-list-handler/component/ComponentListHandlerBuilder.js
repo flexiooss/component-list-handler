@@ -8,8 +8,6 @@ export class ComponentListHandlerBuilder {
     this.__componentContext = null
     this.__parentNode = null
     this.__idPrefix = null
-    this.__onCreateItem = null
-    this.__onDeleteItem = null
     this.__proxyStoreItems = null
   }
 
@@ -43,26 +41,6 @@ export class ComponentListHandlerBuilder {
     return this
   }
 
-  /**
-   * @param {Function} onCreateItem
-   * @return {ComponentListHandlerBuilder}
-   */
-  onCreateItem(onCreateItem){
-    isFunction(onCreateItem)
-    this.__onCreateItem = onCreateItem
-    return this
-  }
-
-  /**
-   * @param {Function} onDeleteItem
-   * @return {ComponentListHandlerBuilder}
-   */
-  onDeleteItem(onDeleteItem){
-    isFunction(onDeleteItem)
-    this.__onDeleteItem = onDeleteItem
-    return this
-  }
-
   proxyStoreItems(proxyStoreItems) {
     this.__proxyStoreItems = proxyStoreItems
     return this
@@ -75,17 +53,13 @@ export class ComponentListHandlerBuilder {
     assertType(!isNull(this.__componentContext), 'componentContext node should be set')
     assertType(!isNull(this.__parentNode), 'parentNode node should be set')
     assertType(!isNull(this.__idPrefix), 'idPrefix node should be set')
-    assertType(!isNull(this.__onCreateItem), 'onCreateItem node should be set')
-    assertType(!isNull(this.__onDeleteItem), 'onDeleteItem node should be set')
     assertType(!isNull(this.__proxyStoreItems), 'proxyStoreItems node should be set')
     return new ComponentListHandlerPublic(
       new ComponentListHandler(
         this.__componentContext,
         this.__parentNode,
         this.__proxyStoreItems,
-        this.__idPrefix,
-        this.__onCreateItem,
-        this.__onDeleteItem
+        this.__idPrefix
       )
     )
   }

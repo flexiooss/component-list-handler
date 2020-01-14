@@ -9,7 +9,7 @@
     "@flexio-oss/hotballoon-test-dummies": "1.0.0-dev"
   },
   "dependencies": {
-    "@flexio-corp/hotballoon-common-parent": "0.2.0-dev"
+    "@flexio-corp/hotballoon-app-parent": "0.1.0-dev"
   },
   "peerDependencies": {
     "@flexio-oss/hotballoon": ">0.0.0",

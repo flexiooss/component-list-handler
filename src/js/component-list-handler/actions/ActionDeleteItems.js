@@ -32,27 +32,6 @@ export class ActionDeleteItems {
 
   /**
    *
-   * @param {ComponentContext} componentContext
-   * @param {Function} onDeleteItem
-   * @param {Store<ItemCollection, ItemCollectionBuilder>} storeItemCollection
-   * @param {ProxyStore<ItemCollection, ItemCollectionBuilder>} proxyStoreItems
-   * @returns {ActionDeleteItems}
-   */
-  listen(componentContext, onDeleteItem, storeItemCollection, proxyStoreItems) {
-    this.__action.listenWithCallback(
-      /**
-       *
-       * @param {DeleteItems} payload
-       */
-      (payload) => {
-      },
-      componentContext
-    )
-    return this
-  }
-
-  /**
-   *
    * @returns {ActionDispatcher<DeleteItems, DeleteItemsBuilder>}
    */
   action() {

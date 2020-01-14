@@ -2,6 +2,9 @@ import '../../../../generated/io/package'
 import {StoreItemCollection} from '../stores/StoreItemCollection'
 import {ViewContainerListHandler} from '../views/ViewContainerListHandler'
 import {ViewContainerParameters} from '@flexio-oss/hotballoon'
+import {ActionCreateItems} from '../actions/ActionCreateItems'
+import {ActionDeleteItems} from '../actions/ActionDeleteItems'
+import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 
 export class ComponentListHandler {
   /**
@@ -10,16 +13,15 @@ export class ComponentListHandler {
    * @param {Element} parentNode
    * @param {ProxyStore<TYPE, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
    * @param {string} idPrefix
-   * @param {Function} onCreateItem
-   * @param {Function} onDeleteItem
    */
-  constructor(componentContext, parentNode, proxyStoreItems, idPrefix, onCreateItem, onDeleteItem) {
+  constructor(componentContext, parentNode, proxyStoreItems, idPrefix) {
     this.__componentContext = componentContext
     this.__parentNode = parentNode
     this.__proxyStoreItems = proxyStoreItems
     this.__idPrefix = idPrefix
-    this.__onCreateItem = onCreateItem
-    this.__onDeleteItem = onDeleteItem
+    
+    this.__actionCreateItems = ActionCreateItems.create(this.__componentContext.dispatcher())
+    this.__actionDeleteItems = ActionDeleteItems.create(this.__componentContext.dispatcher())
     
     this.__viewContainer = null
     
@@ -32,25 +34,39 @@ export class ComponentListHandler {
       (payload) => {
         let currentCollection = this.__storeItemCollection.store().state().data().elements()
         let newCollection = this.__proxyStoreItems.state().data().elements()
-        let addedItems = currentCollection.filter((item) => {
-          return !newCollection.includes(item);
-        })
-        let removedItems = newCollection.filter((item) => {
-          return !currentCollection.includes(item);
-        })
-        addedItems.forEach((item) => {
-          this.__onCreateItem(item)
-        })
 
-        removedItems.forEach((item) => {
-          this.__onDeleteItem(item)
-        })
-        
-        this.__storeItemCollection.store().set(
-          this.__storeItemCollection.store().dataBuilder()
-            .elements(newCollection)
-            .build()
-        )
+        if (!currentCollection.equals(newCollection)) {
+          let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+          currentCollection.forEach((item) => {
+            if (!newCollection.includes(item)) {
+              removedItems.push(item)
+            }
+          })
+          let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+          newCollection.forEach((item) => {
+            if (!currentCollection.includes(item)) {
+              addedItems.push(item)
+            }
+          })
+
+          if (removedItems.length) {
+            this.__actionDeleteItems.action().dispatch(
+              this.__actionDeleteItems.action().payloadBuilder().elements(removedItems).build()
+            )
+          }
+
+          this.__storeItemCollection.store().set(
+            this.__storeItemCollection.store().dataBuilder()
+              .elements(newCollection)
+              .build()
+          )
+
+          if (addedItems.length) {
+            this.__actionCreateItems.action().dispatch(
+              this.__actionCreateItems.action().payloadBuilder().elements(addedItems).build()
+            )
+          }
+        }
       }
     )
 
@@ -71,5 +87,32 @@ export class ComponentListHandler {
     this.__viewContainer.renderAndMount()
     this.__componentContext.addViewContainer(this.__viewContainer)
     return this
+  }
+
+  /**
+   * @param {Function} onCreateItem
+   * @return {ComponentListHandler}
+   */
+  onCreateItem(onCreateItem){
+    this.__actionCreateItems.action().listenWithCallback(onCreateItem, this.__componentContext)
+    return this
+  }
+
+  /**
+   * @param {Function} onDeleteItem
+   * @return {ComponentListHandler}
+   */
+  onDeleteItem(onDeleteItem){
+    this.__actionDeleteItems.action().listenWithCallback(onDeleteItem, this.__componentContext)
+    return this
+  }
+
+  /**
+   *
+   * @param {string} id
+   * @returns {Element}
+   */
+  nodeByID(id) {
+    return this.__viewContainer.nodeByID(id)
   }
 }

@@ -4,11 +4,15 @@ import {InMemoryStoreBuilder, ProxyStoreBuilder} from '@flexio-oss/hotballoon'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {StringArray} from '@flexio-oss/flex-types'
 
+const viewLogOptions = {
+  color: '#e2183e',
+  titleSize: 4
+}
 
 const applicationDev = ApplicationWithStyleAndLayers.withConsoleLogger(document.body)
 const componentContext = applicationDev.application().addComponentContext()
 
-let data = new StringArray('param1', 'param2', 'param3', 'param4')
+let data = new StringArray('param1')
 let store = componentContext.addStore(
   new InMemoryStoreBuilder()
     .type(globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollection)
@@ -26,22 +30,75 @@ let proxyStore = new ProxyStoreBuilder()
 
 let component = new ComponentListHandlerBuilder()
   .componentContext(componentContext)
-  .parentNode(document.body)
+  .parentNode(applicationDev.layersComponent().addLayer().getElement())
   .proxyStoreItems(proxyStore)
   .idPrefix('prefix')
-  .onCreateItem((item) => console.log(item + ' created'))
-  .onDeleteItem((item) => console.log(item + ' deleted'))
   .build()
 
+component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = el})})
+component.onDeleteItem((e) => {e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')})
 
-// Remove one
+
+component.nodeByID('param1').innerHTML = 'param1'
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info().pushLog('must have {\'param1\'}'),
+  viewLogOptions
+)
+debugger
+
 store.set(
-  store.dataBuilder().elements(new StringArray('param1', 'param2', 'param3')).build()
+  store.dataBuilder().elements(new StringArray( 'param2')).build()
 )
 
-// add one
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info().pushLog('must have {\'param2\'}'),
+  viewLogOptions
+)
+debugger
+
 store.set(
-  store.dataBuilder().elements(new StringArray('param1', 'param2', 'param3', 'param6')).build()
+  store.dataBuilder().elements(new StringArray( 'param2', 'param3', 'param4', 'param5')).build()
+)
+
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info()    .pushLog('must have {\'param2\', \'param3\', \'param4\', \'param5\'}'),
+  viewLogOptions
+)
+debugger
+
+store.set(
+  store.dataBuilder().elements(new StringArray( 'param2', 'param3', 'param4', 'param5')).build()
+)
+
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info().pushLog('must have {\'param2\', \'param3\', \'param4\', \'param5\'}'),
+  viewLogOptions
+)
+debugger
+
+store.set(
+  store.dataBuilder().elements(new StringArray( 'param5', 'param2', 'param3', 'param4')).build()
+)
+
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info().pushLog('must have {\'param5\', \'param2\', \'param3\', \'param4\'}'),
+  viewLogOptions
+)
+debugger
+
+store.set(
+  store.dataBuilder().elements(new StringArray( 'param4')).build()
+)
+
+componentContext.logger().log(
+  componentContext.logger().builder()
+    .info().pushLog('must have {\'param4\'}'),
+  viewLogOptions
 )
 
 

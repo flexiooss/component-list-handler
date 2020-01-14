@@ -9,7 +9,7 @@ export class ViewContainerListHandler extends ViewContainer {
   /**
    *
    * @param {ViewContainerParameters} viewContainerParameters
-   * @param {PublicStoreHandler<ItemCollection>} storeItemCollection
+   * @param {PublicStoreHandler<ItemCollection, ItemCollectionBuilder>} storeItemCollection
    * @param {String} idPrefix
    */
   constructor(viewContainerParameters, storeItemCollection, idPrefix) {
@@ -17,5 +17,9 @@ export class ViewContainerListHandler extends ViewContainer {
     this.__storeItemCollection = storeItemCollection
     this.__idPrefix = idPrefix
     this.__view = this.addView(new ViewListHandler(this, this.__storeItemCollection, this.__idPrefix))
+  }
+
+  nodeByID(id) {
+    return this.__view.nodeByID(id)
   }
 }

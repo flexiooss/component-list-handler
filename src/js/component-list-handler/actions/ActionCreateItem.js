@@ -32,27 +32,6 @@ export class ActionCreateItem {
 
   /**
    *
-   * @param {ComponentContext} componentContext
-   * @param {Function} onCreateItem
-   * @param {Store<ItemCollection, ItemCollectionBuilder>} storeItemCollection
-   * @param {ProxyStore<ItemCollection, ItemCollectionBuilder>} proxyStoreItems
-   * @returns {ActionCreateItem}
-   */
-  listen(componentContext, onCreateItem, storeItemCollection, proxyStoreItems) {
-    this.__action.listenWithCallback(
-      /**
-       *
-       * @param {CreateItem} payload
-       */
-      (payload) => {
-      },
-      componentContext
-    )
-    return this
-  }
-
-  /**
-   *
    * @returns {ActionDispatcher<CreateItem, CreateItemBuilder>}
    */
   action() {
