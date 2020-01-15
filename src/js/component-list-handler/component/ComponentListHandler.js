@@ -5,6 +5,7 @@ import {ViewContainerParameters} from '@flexio-oss/hotballoon'
 import {ActionCreateItems} from '../actions/ActionCreateItems'
 import {ActionDeleteItems} from '../actions/ActionDeleteItems'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
+import {isNull} from '@flexio-oss/assert'
 
 export class ComponentListHandler {
   /**
@@ -35,37 +36,45 @@ export class ComponentListHandler {
         let currentCollection = this.__storeItemCollection.store().state().data().elements()
         let newCollection = this.__proxyStoreItems.state().data().elements()
 
-        if (!currentCollection.equals(newCollection)) {
-          let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+        let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+        let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+
+        if (isNull(currentCollection) || isNull(newCollection)) {
+          if (isNull(currentCollection)) {
+            addedItems = newCollection
+          } else if (isNull(newCollection)) {
+            removedItems = currentCollection
+          }
+        } else if (!currentCollection.equals(newCollection)) {
           currentCollection.forEach((item) => {
             if (!newCollection.includes(item)) {
               removedItems.push(item)
             }
           })
-          let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+
           newCollection.forEach((item) => {
             if (!currentCollection.includes(item)) {
               addedItems.push(item)
             }
           })
+        }
 
-          if (removedItems.length) {
-            this.__actionDeleteItems.action().dispatch(
-              this.__actionDeleteItems.action().payloadBuilder().elements(removedItems).build()
-            )
-          }
-
-          this.__storeItemCollection.store().set(
-            this.__storeItemCollection.store().dataBuilder()
-              .elements(newCollection)
-              .build()
+        if (!isNull(removedItems) && removedItems.length) {
+          this.__actionDeleteItems.action().dispatch(
+            this.__actionDeleteItems.action().payloadBuilder().elements(removedItems).build()
           )
+        }
 
-          if (addedItems.length) {
-            this.__actionCreateItems.action().dispatch(
-              this.__actionCreateItems.action().payloadBuilder().elements(addedItems).build()
-            )
-          }
+        this.__storeItemCollection.store().set(
+          this.__storeItemCollection.store().dataBuilder()
+            .elements(newCollection)
+            .build()
+        )
+
+        if (!isNull(addedItems) && addedItems.length) {
+          this.__actionCreateItems.action().dispatch(
+            this.__actionCreateItems.action().payloadBuilder().elements(addedItems).build()
+          )
         }
       }
     )
