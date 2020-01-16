@@ -32,6 +32,10 @@ export class ComponentListHandlerPublic {
     return this
   }
 
+  remove() {
+    this[__componentListHandler].remove()
+  }
+
   /**
    * 
    * @param {string} id

@@ -7,12 +7,15 @@ import {ActionDeleteItems} from '../actions/ActionDeleteItems'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {isNull} from '@flexio-oss/assert'
 
+/**
+ * @template TYPE, TYPE_BUILDER
+ */
 export class ComponentListHandler {
   /**
    *
    * @param {ComponentContext} componentContext
    * @param {Element} parentNode
-   * @param {ProxyStore<TYPE, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
+   * @param {ProxyStore<TYPE, TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
    * @param {string} idPrefix
    */
   constructor(componentContext, parentNode, proxyStoreItems, idPrefix) {
@@ -114,6 +117,17 @@ export class ComponentListHandler {
   onDeleteItem(onDeleteItem){
     this.__actionDeleteItems.action().listenWithCallback(onDeleteItem, this.__componentContext)
     return this
+  }
+
+  remove() {
+    this.__componentContext.logger().log(
+      this.__componentContext.logger().builder()
+        .info()
+        .pushLog(this.constructor.name + ': Hotballoon killed me'),
+      { color: '#ca4ee2', titleSize: 3 }
+    )
+    this.__componentContext.remove()
+    this.__componentContext = null
   }
 
   /**

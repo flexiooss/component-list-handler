@@ -29,7 +29,7 @@ let proxyStore = new ProxyStoreBuilder()
   .build()
 
 let component = new ComponentListHandlerBuilder()
-  .componentContext(componentContext)
+  .application(applicationDev.application())
   .parentNode(applicationDev.layersComponent().addLayer().getElement())
   .proxyStoreItems(proxyStore)
   .idPrefix('prefix')
@@ -100,5 +100,9 @@ componentContext.logger().log(
     .info().pushLog('must have {\'param4\'}'),
   viewLogOptions
 )
+
+debugger
+
+component.remove()
 
 
