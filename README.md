@@ -13,7 +13,7 @@ let component = new ComponentListHandlerBuilder()
   ```
 
 
-###declare callback to execute before remove an element :
+### declare callback to execute before remove an element :
 ```javascript
 component.onCreateItem((e) => {
   e.elements().forEach((el) => {
@@ -31,7 +31,7 @@ CreateItems:
 ```
 
 
-###declare callback to execute after add an element :
+### declare callback to execute after add an element :
 ```javascript
 component.onDeleteItem((e) => {
   e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')
