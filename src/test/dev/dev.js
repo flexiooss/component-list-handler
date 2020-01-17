@@ -3,6 +3,7 @@ import {ComponentListHandlerBuilder} from '../../js/component-list-handler/compo
 import {InMemoryStoreBuilder, ProxyStoreBuilder} from '@flexio-oss/hotballoon'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {StringArray} from '@flexio-oss/flex-types'
+import {ViewListHandlerMounter} from '../../js/component-list-handler/views/ViewListHandlerMounter/ViewListHandlerMounter'
 
 const viewLogOptions = {
   color: '#e2183e',
@@ -33,6 +34,7 @@ let component = new ComponentListHandlerBuilder()
   .parentNode(applicationDev.layersComponent().addLayer().getElement())
   .proxyStoreItems(proxyStore)
   .idPrefix('prefix')
+  .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
 
 component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = el})})

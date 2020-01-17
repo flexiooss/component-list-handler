@@ -6,6 +6,7 @@ import {ActionCreateItems} from '../actions/ActionCreateItems'
 import {ActionDeleteItems} from '../actions/ActionDeleteItems'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {isNull} from '@flexio-oss/assert'
+import {ViewListHandlerMounterConfig} from '../views/ViewListHandlerMounter/ViewListHandlerMounterConfig'
 
 /**
  * @template TYPE, TYPE_BUILDER
@@ -15,20 +16,22 @@ export class ComponentListHandler {
    *
    * @param {ComponentContext} componentContext
    * @param {Element} parentNode
+   * @param {ViewListHandlerMounter} viewListHandlerMounter
    * @param {ProxyStore<TYPE, TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
    * @param {string} idPrefix
    */
-  constructor(componentContext, parentNode, proxyStoreItems, idPrefix) {
+  constructor(componentContext, parentNode, viewListHandlerMounter, proxyStoreItems, idPrefix) {
     this.__componentContext = componentContext
     this.__parentNode = parentNode
+    this.__viewListHandlerMounter = viewListHandlerMounter
     this.__proxyStoreItems = proxyStoreItems
     this.__idPrefix = idPrefix
-    
+
     this.__actionCreateItems = ActionCreateItems.create(this.__componentContext.dispatcher())
     this.__actionDeleteItems = ActionDeleteItems.create(this.__componentContext.dispatcher())
-    
+
     this.__viewContainer = null
-    
+
     this.__storeItemCollection = StoreItemCollection.create(this.__componentContext, this.__proxyStoreItems)
     this.__proxyStoreItems.listenChanged(
       /**
@@ -86,17 +89,14 @@ export class ComponentListHandler {
   }
 
   __mountView() {
-    this.__viewContainer =  new ViewContainerListHandler(
-      new ViewContainerParameters(
-        this.__componentContext,
-        this.__componentContext.nextID(),
-        this.__parentNode
-      ),
-      this.__storeItemCollection.storePublic(),
-      this.__idPrefix
-    )
+    this.__viewContainer = this.__viewListHandlerMounter
+      .buildView(new ViewListHandlerMounterConfig()
+        .componentContext(this.__componentContext)
+        .parentNode(this.__parentNode)
+        .storeItemCollection(this.__storeItemCollection.storePublic())
+        .idPrefix(this.__idPrefix)
+      ).viewContainer()
 
-    this.__viewContainer.renderAndMount()
     this.__componentContext.addViewContainer(this.__viewContainer)
     return this
   }
@@ -105,7 +105,7 @@ export class ComponentListHandler {
    * @param {Function} onCreateItem
    * @return {ComponentListHandler}
    */
-  onCreateItem(onCreateItem){
+  onCreateItem(onCreateItem) {
     this.__actionCreateItems.action().listenWithCallback(onCreateItem, this.__componentContext)
     return this
   }
@@ -114,7 +114,7 @@ export class ComponentListHandler {
    * @param {Function} onDeleteItem
    * @return {ComponentListHandler}
    */
-  onDeleteItem(onDeleteItem){
+  onDeleteItem(onDeleteItem) {
     this.__actionDeleteItems.action().listenWithCallback(onDeleteItem, this.__componentContext)
     return this
   }
@@ -124,7 +124,7 @@ export class ComponentListHandler {
       this.__componentContext.logger().builder()
         .info()
         .pushLog(this.constructor.name + ': Hotballoon killed me'),
-      { color: '#ca4ee2', titleSize: 3 }
+      {color: '#ca4ee2', titleSize: 3}
     )
     this.__componentContext.remove()
     this.__componentContext = null

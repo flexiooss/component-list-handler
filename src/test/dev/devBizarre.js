@@ -3,6 +3,7 @@ import {ComponentListHandlerBuilder} from '../../js/component-list-handler/compo
 import {InMemoryStoreBuilder, ProxyStoreBuilder} from '@flexio-oss/hotballoon'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {StringArray} from '@flexio-oss/flex-types'
+import {ViewListHandlerMounter} from '../../js/component-list-handler/views/ViewListHandlerMounter/ViewListHandlerMounter'
 
 const viewLogOptions = {
   color: '#e2183e',
@@ -33,20 +34,20 @@ let component = new ComponentListHandlerBuilder()
   .parentNode(applicationDev.layersComponent().addLayer().getElement())
   .proxyStoreItems(proxyStore)
   .idPrefix('prefix')
+  .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
 
-component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = el})})
+component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = `<p>${el}</p>`})})
 component.onDeleteItem((e) => {e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')})
 
 
-data.forEach((da) => {component.nodeByID(da).innerHTML = da})
+data.forEach((da) => {component.nodeByID(da).innerHTML = `<p>${da}</p>`})
 
 
 debugger
 store.set(
   store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
 )
-console.log(document.getElementById('-1850997853'))
 
 debugger
 

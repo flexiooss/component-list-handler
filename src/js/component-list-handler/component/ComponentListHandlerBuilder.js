@@ -2,6 +2,7 @@ import {ComponentListHandler} from './ComponentListHandler'
 import {TypeCheck} from '@flexio-oss/hotballoon'
 import {assertType, isNode, isNull, isString} from '@flexio-oss/assert'
 import {ComponentListHandlerPublic} from './ComponentListHandlerPublic'
+import {isViewListHandlerMounter} from '../views/ViewListHandlerMounter/ViewListHandlerMounter'
 
 /**
  * @template STORE_TYPE, STORE_TYPE_BUILDER
@@ -31,10 +32,17 @@ export class ComponentListHandlerBuilder {
 
     /**
      *
-     * @type {ProxyStore<TYPE, TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>}
+     * @type {ProxyStore<STORE_TYPE, STORE_TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>}
      * @private
      */
     this.__proxyStoreItems = null
+
+    /**
+     *
+     * @type {ViewListHandlerMounter}
+     * @private
+     */
+    this.__viewListHandlerMounter = null
   }
 
   /**
@@ -78,6 +86,17 @@ export class ComponentListHandlerBuilder {
   }
 
   /**
+   *
+   * @param {ViewListHandlerMounter} viewListHandlerMounter
+   * @returns {ComponentListHandlerBuilder}
+   */
+  viewListHandlerMounter(viewListHandlerMounter) {
+    isViewListHandlerMounter(viewListHandlerMounter)
+    this.__viewListHandlerMounter = viewListHandlerMounter
+    return this
+  }
+
+  /**
    * @return {ComponentListHandlerPublic}
    */
   build() {
@@ -85,10 +104,12 @@ export class ComponentListHandlerBuilder {
     assertType(!isNull(this.__parentNode), 'parentNode node should be set')
     assertType(!isNull(this.__idPrefix), 'idPrefix node should be set')
     assertType(!isNull(this.__proxyStoreItems), 'proxyStoreItems node should be set')
+    assertType(!isNull(this.__viewListHandlerMounter), 'viewListHandlerMounter node should be set')
     return new ComponentListHandlerPublic(
       new ComponentListHandler(
         this.__application.addComponentContext(),
         this.__parentNode,
+        this.__viewListHandlerMounter,
         this.__proxyStoreItems,
         this.__idPrefix
       )

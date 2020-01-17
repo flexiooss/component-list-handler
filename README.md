@@ -9,6 +9,7 @@ let component = new ComponentListHandlerBuilder()
   .parentNode(parentNode)
   .proxyStoreItems(proxyStore)
   .idPrefix('prefix') // to personalize element in dom
+  .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
   ```
 
