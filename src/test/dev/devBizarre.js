@@ -41,29 +41,33 @@ component.onDeleteItem((e) => {e.elements().forEach((el) => component.nodeByID(e
 
 data.forEach((da) => {component.nodeByID(da).innerHTML = da})
 
-debugger
 
+debugger
 store.set(
   store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
 )
+console.log(document.getElementById('-1850997853'))
 
 debugger
 
 store.set(
-  store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
+store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
 )
+console.log(document.getElementById('-1850997853'))
 
 debugger
 
 store.set(
-  store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
+store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
 )
 
+console.log(document.getElementById('-1850997853'))
 debugger
 
+
+
 store.set(
-  store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
+store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
 )
-
-
+console.log(document.getElementById('-1850997853'))
 
