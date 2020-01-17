@@ -42,7 +42,6 @@ export class ComponentListHandlerPublic {
    * @returns {Element}
    */
   nodeByID(id) {
-    console.log(id)
     return this[__componentListHandler].nodeByID(id)
   }
 }
