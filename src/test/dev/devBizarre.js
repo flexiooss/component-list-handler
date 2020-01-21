@@ -13,7 +13,7 @@ const viewLogOptions = {
 const applicationDev = ApplicationWithStyleAndLayers.withConsoleLogger(document.body)
 const componentContext = applicationDev.application().addComponentContext()
 
-let data = new StringArray('12','11','10','9','8','7','6','5','3','1')
+let data = new StringArray('5', '3', '1')
 let store = componentContext.addStore(
   new InMemoryStoreBuilder()
     .type(globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollection)
@@ -26,7 +26,9 @@ let store = componentContext.addStore(
 let proxyStore = new ProxyStoreBuilder()
   .type(globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollection)
   .store(store)
-  .mapper((data) => { return new globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollectionBuilder().elements(data.elements()).build() })
+  .mapper((data) => {
+    return new globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollectionBuilder().elements(data.elements()).build()
+  })
   .build()
 
 let component = new ComponentListHandlerBuilder()
@@ -37,38 +39,57 @@ let component = new ComponentListHandlerBuilder()
   .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
 
-component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = `<p>${el}</p>`})})
-component.onDeleteItem((e) => {e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')})
+component.onCreateItem((e) => {
+  e.elements().forEach((el) => {
+    console.log('onCreateItem : ' + el)
 
+    component.nodeByID(el).innerHTML = `<p>${el}</p>`
+  })
+})
+component.onDeleteItem((e) => {
 
-data.forEach((da) => {component.nodeByID(da).innerHTML = `<p>${da}</p>`})
+  e.elements().forEach((el) => {
+    console.log('onDeleteItem : ' + el)
+    component.nodeByID(el).innerHTML = 'del'
+  })
+})
 
+data.forEach((da) => {
+  component.nodeByID(da).innerHTML = `<p>${da}</p>`
+})
+console.log('________________________________')
+console.log('\'5\', \'3\', \'1\'')
+console.log('________________________________')
 
 debugger
 store.set(
-  store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
+  store.dataBuilder().elements(new StringArray('3')).build()
 )
-
+console.log('________________________________')
+console.log('3')
+console.log('________________________________')
 debugger
 
 store.set(
-store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
+  store.dataBuilder().elements(new StringArray('5', '3', '1')).build()
 )
-console.log(document.getElementById('-1850997853'))
-
+console.log('________________________________')
+console.log('\'5\', \'3\', \'1\'')
+console.log('________________________________')
 debugger
 
 store.set(
-store.dataBuilder().elements(new StringArray("3", "13", "14")).build()
+  store.dataBuilder().elements(new StringArray('3', '13')).build()
 )
 
-console.log(document.getElementById('-1850997853'))
+console.log('________________________________')
+console.log('\'3\', \'13\'')
+console.log('________________________________')
 debugger
 
-
-
 store.set(
-store.dataBuilder().elements(new StringArray('12','11','10','9','8','7','6','5','3','1')).build()
+  store.dataBuilder().elements(new StringArray('12', '11', '10', '9', '8', '7', '6', '5', '3', '1')).build()
 )
-console.log(document.getElementById('-1850997853'))
-
+console.log('________________________________')
+console.log('\'12\', \'11\', \'10\', \'9\', \'8\', \'7\', \'6\', \'5\', \'3\', \'1\'')
+console.log('________________________________')
