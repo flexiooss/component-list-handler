@@ -1,9 +1,9 @@
 import {ApplicationWithStyleAndLayers} from '@flexio-oss/hotballoon-test-dummies/index-view'
-import {ComponentListHandlerBuilder} from '../../js/component-list-handler/component/ComponentListHandlerBuilder'
+import {ComponentListHandlerBuilder} from '../../js/component/ComponentListHandlerBuilder'
 import {InMemoryStoreBuilder, ProxyStoreBuilder} from '@flexio-oss/hotballoon'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
 import {StringArray} from '@flexio-oss/flex-types'
-import {ViewListHandlerMounter} from '../../js/component-list-handler/views/ViewListHandlerMounter/ViewListHandlerMounter'
+import {ViewListHandlerMounter} from '../../js/views/ViewListHandlerMounter/ViewListHandlerMounter'
 
 
 const viewLogOptions = {
