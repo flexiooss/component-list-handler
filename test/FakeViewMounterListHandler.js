@@ -1,9 +1,7 @@
-import {FakeViewContainerPagination} from '@flexio-corp/component-pagination/src/test/FakeViewContainerPagination'
-import {ViewMounter} from '../../../../../../src/js/modules/configs/ViewMounter'
+import {FakeViewContainerListHandler} from './FakeViewContainerListHandler'
 
-export class FakeViewMounterListHandler extends ViewMounter {
+export class FakeViewMounterListHandler {
   constructor(componentContext) {
-    super()
     this.componentContext = componentContext
   }
   buildView(viewMounterConfig) {
@@ -13,6 +11,6 @@ export class FakeViewMounterListHandler extends ViewMounter {
    * @return {ViewContainer}
    */
   viewContainer() {
-    return new FakeViewContainerPagination(this.componentContext)
+    return new FakeViewContainerListHandler(this.componentContext)
   }
 }

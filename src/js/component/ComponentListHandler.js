@@ -1,4 +1,4 @@
-import '../../../../generated/io/package'
+import '../../../generated/io/package'
 import {StoreItemCollection} from '../stores/StoreItemCollection'
 import {ViewContainerListHandler} from '../views/ViewContainerListHandler'
 import {ViewContainerParameters} from '@flexio-oss/hotballoon'
