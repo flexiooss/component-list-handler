@@ -19,6 +19,7 @@ export class ViewListHandler extends View {
   template() {
     return this.html(
       e('div#list-' + this.__idPrefix)
+        .reconciliationRules(RECONCILIATION_RULES.ONLY_CHILDREN)
         .childNodes(
           ...this.__nodeList()
         )
@@ -43,7 +44,7 @@ export class ViewListHandler extends View {
   }
 
   /**
-   * 
+   *
    * @param {string} id
    * @returns {Element}
    */

@@ -1,6 +1,6 @@
 {
   "name": "@flexio-oss/component-list-handler",
-  "version": "1.0.0-dev",
+  "version": "1.1.0-dev",
   "main": "index.js",
   "repository": "git@github.com:Flexio-oss/component-list-handler.git",
   "author": "Antoine Bachetti (https://github.com/AntoineBcht)",
@@ -9,7 +9,7 @@
     "@flexio-oss/hotballoon-test-dummies": "1.0.0-dev"
   },
   "dependencies": {
-    "@flexio-corp/hotballoon-app-parent": "0.1.0-dev"
+    "@flexio-corp/component-styled-parent": "1.1.0"
   },
   "peerDependencies": {
     "@flexio-oss/hotballoon": ">0.0.0",
