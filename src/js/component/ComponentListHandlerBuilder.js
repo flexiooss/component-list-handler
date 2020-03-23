@@ -1,6 +1,6 @@
 import {ComponentListHandler} from './ComponentListHandler'
 import {TypeCheck} from '@flexio-oss/hotballoon'
-import {assertType, isNode, isNull, isString} from '@flexio-oss/assert'
+import {assert, assertType, isBoolean, isNode, isNull, isString} from '@flexio-oss/assert'
 import {ComponentListHandlerPublic} from './ComponentListHandlerPublic'
 import {isViewListHandlerMounter} from '../views/ViewListHandlerMounter/ViewListHandlerMounter'
 
@@ -43,6 +43,13 @@ export class ComponentListHandlerBuilder {
      * @private
      */
     this.__viewListHandlerMounter = null
+
+    /**
+     *
+     * @type {boolean}
+     * @private
+     */
+    this.__reconcile = true
   }
 
   /**
@@ -50,7 +57,7 @@ export class ComponentListHandlerBuilder {
    * @return {ComponentListHandlerBuilder}
    */
   application(application) {
-    TypeCheck.isHotballoonApplication(application)
+    assert(TypeCheck.isHotballoonApplication(application), 'ComponentListHandlerBuilder:application: argument should be a HotballoonApplication')
     this.__application = application
     return this
   }
@@ -60,7 +67,7 @@ export class ComponentListHandlerBuilder {
    * @return {ComponentListHandlerBuilder}
    */
   parentNode(parentNode){
-    isNode(parentNode)
+    assert(isNode(parentNode), 'ComponentListHandlerBuilder:parentNode: argument should be a node')
     this.__parentNode = parentNode
     return this
   }
@@ -70,7 +77,7 @@ export class ComponentListHandlerBuilder {
    * @return {ComponentListHandlerBuilder}
    */
   idPrefix(idPrefix){
-    isString(idPrefix)
+    assert(isString(idPrefix), 'ComponentListHandlerBuilder:idPrefix: argument should be a string')
     this.__idPrefix = idPrefix
     return this
   }
@@ -81,6 +88,7 @@ export class ComponentListHandlerBuilder {
    * @returns {ComponentListHandlerBuilder}
    */
   proxyStoreItems(proxyStoreItems) {
+    assert(TypeCheck.isProxyStore(proxyStoreItems), 'ComponentListHandlerBuilder:proxyStoreItems: argument should be a ProxyStore')
     this.__proxyStoreItems = proxyStoreItems
     return this
   }
@@ -91,8 +99,20 @@ export class ComponentListHandlerBuilder {
    * @returns {ComponentListHandlerBuilder}
    */
   viewListHandlerMounter(viewListHandlerMounter) {
-    isViewListHandlerMounter(viewListHandlerMounter)
+    assert(isViewListHandlerMounter(viewListHandlerMounter), 'ComponentListHandlerBuilder:viewListHandlerMounter: argument should be a ViewListHandlerMounter')
+
     this.__viewListHandlerMounter = viewListHandlerMounter
+    return this
+  }
+
+  /**
+   *
+   * @param {boolean} value
+   * @returns {ComponentListHandlerBuilder}
+   */
+  reconcile(value) {
+    assert(isBoolean(value), 'ComponentListHandlerBuilder:reconcile: argument should be a boolean')
+    this.__reconcile = value
     return this
   }
 
@@ -111,7 +131,8 @@ export class ComponentListHandlerBuilder {
         this.__parentNode,
         this.__viewListHandlerMounter,
         this.__proxyStoreItems,
-        this.__idPrefix
+        this.__idPrefix,
+        this.__reconcile
       )
     )
   }

@@ -1,7 +1,5 @@
 import '../../../generated/io/package'
 import {StoreItemCollection} from '../stores/StoreItemCollection'
-import {ViewContainerListHandler} from '../views/ViewContainerListHandler'
-import {ViewContainerParameters} from '@flexio-oss/hotballoon'
 import {ActionCreateItems} from '../actions/ActionCreateItems'
 import {ActionDeleteItems} from '../actions/ActionDeleteItems'
 import {globalFlexioImport} from '@flexio-oss/global-import-registry'
@@ -19,13 +17,15 @@ export class ComponentListHandler {
    * @param {ViewListHandlerMounter} viewListHandlerMounter
    * @param {ProxyStore<TYPE, TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
    * @param {string} idPrefix
+   * @param {boolean} reconcile
    */
-  constructor(componentContext, parentNode, viewListHandlerMounter, proxyStoreItems, idPrefix) {
+  constructor(componentContext, parentNode, viewListHandlerMounter, proxyStoreItems, idPrefix, reconcile) {
     this.__componentContext = componentContext
     this.__parentNode = parentNode
     this.__viewListHandlerMounter = viewListHandlerMounter
     this.__proxyStoreItems = proxyStoreItems
     this.__idPrefix = idPrefix
+    this.__reconcile = reconcile
 
     this.__actionCreateItems = ActionCreateItems.create(this.__componentContext.dispatcher())
     this.__actionDeleteItems = ActionDeleteItems.create(this.__componentContext.dispatcher())
@@ -36,33 +36,38 @@ export class ComponentListHandler {
     this.__proxyStoreItems.listenChanged(
       /**
        *
-       * @param {ItemCollection} payload
+       * @param {StoreState<ItemCollection>} payload
        */
       (payload) => {
         let currentCollection = this.__storeItemCollection.store().state().data().elements()
-        let newCollection = this.__proxyStoreItems.state().data().elements()
+        let newCollection = payload.data().elements()
 
         let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
         let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
 
-        if (isNull(currentCollection) || isNull(newCollection)) {
-          if (isNull(currentCollection)) {
-            addedItems = newCollection
-          } else if (isNull(newCollection)) {
-            removedItems = currentCollection
-          }
-        } else if (!currentCollection.equals(newCollection)) {
-          currentCollection.forEach((item) => {
-            if (!newCollection.includes(item)) {
-              removedItems.push(item)
+        if (this.__reconcile) {
+          if (isNull(currentCollection) || isNull(newCollection)) {
+            if (isNull(currentCollection)) {
+              addedItems = newCollection
+            } else if (isNull(newCollection)) {
+              removedItems = currentCollection
             }
-          })
+          } else if (!currentCollection.equals(newCollection)) {
+            currentCollection.forEach((item) => {
+              if (!newCollection.includes(item)) {
+                removedItems.push(item)
+              }
+            })
 
-          newCollection.forEach((item) => {
-            if (!currentCollection.includes(item)) {
-              addedItems.push(item)
-            }
-          })
+            newCollection.forEach((item) => {
+              if (!currentCollection.includes(item)) {
+                addedItems.push(item)
+              }
+            })
+          }
+        } else {
+          removedItems = currentCollection
+          addedItems = newCollection
         }
 
         if (!isNull(removedItems) && removedItems.length) {

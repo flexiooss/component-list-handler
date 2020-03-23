@@ -1,14 +1,16 @@
 import {FakeViewContainerListHandler} from './FakeViewContainerListHandler'
+import {ViewListHandlerMounter} from '../src/js/views/ViewListHandlerMounter/ViewListHandlerMounter'
 
-export class FakeViewMounterListHandler {
+export class FakeViewMounterListHandler extends ViewListHandlerMounter {
   constructor(componentContext) {
+    super()
     this.componentContext = componentContext
   }
   buildView(viewMounterConfig) {
     return this
   }
   /**
-   * @return {ViewContainer}
+   * @return {ViewContainerListHandler}
    */
   viewContainer() {
     return new FakeViewContainerListHandler(this.componentContext)
