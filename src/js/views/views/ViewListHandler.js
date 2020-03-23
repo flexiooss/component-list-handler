@@ -17,6 +17,7 @@ export class ViewListHandler extends View {
   }
 
   template() {
+    console.log(this.__storeItemCollection.data())
     return this.html(
       e('div#list-' + this.__idPrefix)
         .reconciliationRules(RECONCILIATION_RULES.ONLY_CHILDREN)

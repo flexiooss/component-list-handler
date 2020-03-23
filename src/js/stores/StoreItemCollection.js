@@ -15,10 +15,9 @@ export class StoreItemCollection {
   /**
    *
    * @param {ComponentContext} componentContext
-   * @param {ProxyStore<ItemCollection, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
    * @returns {StoreItemCollection}
    */
-  static create(componentContext, proxyStoreItems) {
+  static create(componentContext) {
     assertType(TypeCheck.isComponentContext(componentContext),
       'StoreExecutions:build: `componentContext` should be a ComponentContext'
     )
@@ -26,9 +25,7 @@ export class StoreItemCollection {
       componentContext.addStore(
         new InMemoryStoreBuilder()
           .type(globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollection)
-          .initialData(new globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollectionBuilder()
-            .elements(proxyStoreItems.state().data().elements())
-            .build())
+          .initialData(new globalFlexioImport.io.flexio.component_list_handler.stores.ItemCollectionBuilder().build())
           .build()
       )
     )

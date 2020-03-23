@@ -32,6 +32,10 @@ export class ComponentListHandlerPublic {
     return this
   }
 
+  apply() {
+    this[__componentListHandler].apply()
+  }
+
   remove() {
     this[__componentListHandler].remove()
   }

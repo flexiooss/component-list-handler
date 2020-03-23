@@ -15,15 +15,15 @@ export class ComponentListHandler {
    * @param {ComponentContext} componentContext
    * @param {Element} parentNode
    * @param {ViewListHandlerMounter} viewListHandlerMounter
-   * @param {ProxyStore<TYPE, TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
+   * @param {StoreBase<ItemCollection, ItemCollectionBuilder>} storeItems
    * @param {string} idPrefix
    * @param {boolean} reconcile
    */
-  constructor(componentContext, parentNode, viewListHandlerMounter, proxyStoreItems, idPrefix, reconcile) {
+  constructor(componentContext, parentNode, viewListHandlerMounter, storeItems, idPrefix, reconcile) {
     this.__componentContext = componentContext
     this.__parentNode = parentNode
     this.__viewListHandlerMounter = viewListHandlerMounter
-    this.__proxyStoreItems = proxyStoreItems
+    this.__storeFuturItems = storeItems
     this.__idPrefix = idPrefix
     this.__reconcile = reconcile
 
@@ -32,65 +32,70 @@ export class ComponentListHandler {
 
     this.__viewContainer = null
 
-    this.__storeItemCollection = StoreItemCollection.create(this.__componentContext, this.__proxyStoreItems)
-    this.__proxyStoreItems.listenChanged(
+    this.__storeItemCollection = StoreItemCollection.create(this.__componentContext)
+
+    this.__storeFuturItems.listenChanged(
       /**
        *
        * @param {StoreState<ItemCollection>} payload
        */
       (payload) => {
-        let currentCollection = this.__storeItemCollection.store().state().data().elements()
-        let newCollection = payload.data().elements()
-
-        let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
-        let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
-
-        if (this.__reconcile) {
-          if (isNull(currentCollection) || isNull(newCollection)) {
-            if (isNull(currentCollection)) {
-              addedItems = newCollection
-            } else if (isNull(newCollection)) {
-              removedItems = currentCollection
-            }
-          } else if (!currentCollection.equals(newCollection)) {
-            currentCollection.forEach((item) => {
-              if (!newCollection.includes(item)) {
-                removedItems.push(item)
-              }
-            })
-
-            newCollection.forEach((item) => {
-              if (!currentCollection.includes(item)) {
-                addedItems.push(item)
-              }
-            })
-          }
-        } else {
-          removedItems = currentCollection
-          addedItems = newCollection
-        }
-
-        if (!isNull(removedItems) && removedItems.length) {
-          this.__actionDeleteItems.action().dispatch(
-            this.__actionDeleteItems.action().payloadBuilder().elements(removedItems).build()
-          )
-        }
-
-        this.__storeItemCollection.store().set(
-          this.__storeItemCollection.store().dataBuilder()
-            .elements(newCollection)
-            .build()
-        )
-
-        if (!isNull(addedItems) && addedItems.length) {
-          this.__actionCreateItems.action().dispatch(
-            this.__actionCreateItems.action().payloadBuilder().elements(addedItems).build()
-          )
-        }
+        this.apply()
       }
     )
-
     this.__mountView()
+  }
+
+
+  apply() {
+    let currentCollection = this.__storeItemCollection.store().state().data().elements()
+    let newCollection = this.__storeFuturItems.state().data().elements()
+
+    let removedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+    let addedItems = new globalFlexioImport.io.flexio.flex_types.arrays.StringArray()
+
+    if (this.__reconcile) {
+      if (isNull(currentCollection) || isNull(newCollection)) {
+        if (isNull(currentCollection)) {
+          addedItems = newCollection
+        } else if (isNull(newCollection)) {
+          removedItems = currentCollection
+        }
+      } else if (!currentCollection.equals(newCollection)) {
+        currentCollection.forEach((item) => {
+          if (!newCollection.includes(item)) {
+            removedItems.push(item)
+          }
+        })
+
+        newCollection.forEach((item) => {
+          if (!currentCollection.includes(item)) {
+            addedItems.push(item)
+          }
+        })
+      }
+    } else {
+      removedItems = currentCollection
+      addedItems = newCollection
+    }
+
+    if (!isNull(removedItems) && removedItems.length) {
+      this.__actionDeleteItems.action().dispatch(
+        this.__actionDeleteItems.action().payloadBuilder().elements(removedItems).build()
+      )
+    }
+
+    this.__storeItemCollection.store().set(
+      this.__storeItemCollection.store().dataBuilder()
+        .elements(newCollection)
+        .build()
+    )
+
+    if (!isNull(addedItems) && addedItems.length) {
+      this.__actionCreateItems.action().dispatch(
+        this.__actionCreateItems.action().payloadBuilder().elements(addedItems).build()
+      )
+    }
   }
 
   __mountView() {

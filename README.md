@@ -7,7 +7,7 @@ component that generate a list of node
 let component = new ComponentListHandlerBuilder()
   .application(application)
   .parentNode(parentNode)
-  .proxyStoreItems(proxyStore)
+  .storeItems(store)
   .idPrefix('prefix') // to personalize element in dom
   .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
@@ -38,6 +38,8 @@ component.onDeleteItem((e) => {
   e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')
 })
   ```
+
+When onCreateItem and onDeleteItem are set, use component.apply() to load the list of items you injected into the component beforehand.
 
 callback parameter:
 ```yaml

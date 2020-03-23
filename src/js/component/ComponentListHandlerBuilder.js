@@ -3,6 +3,7 @@ import {TypeCheck} from '@flexio-oss/hotballoon'
 import {assert, assertType, isBoolean, isNode, isNull, isString} from '@flexio-oss/assert'
 import {ComponentListHandlerPublic} from './ComponentListHandlerPublic'
 import {isViewListHandlerMounter} from '../views/ViewListHandlerMounter/ViewListHandlerMounter'
+import {ItemCollection} from '../../../generated/io/flexio/component_list_handler/stores/ItemCollection'
 
 /**
  * @template STORE_TYPE, STORE_TYPE_BUILDER
@@ -32,10 +33,10 @@ export class ComponentListHandlerBuilder {
 
     /**
      *
-     * @type {ProxyStore<STORE_TYPE, STORE_TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>}
+     * @type {StoreBase<ItemCollection, ItemCollectionBuilder>}
      * @private
      */
-    this.__proxyStoreItems = null
+    this.__storeItems = null
 
     /**
      *
@@ -84,12 +85,15 @@ export class ComponentListHandlerBuilder {
 
   /**
    *
-   * @param {ProxyStore<STORE_TYPE, STORE_TYPE_BUILDER, ItemCollection, ItemCollectionBuilder>} proxyStoreItems
+   * @param {StoreBase<ItemCollection, ItemCollectionBuilder>} storeItems
    * @returns {ComponentListHandlerBuilder}
    */
-  proxyStoreItems(proxyStoreItems) {
-    assert(TypeCheck.isProxyStore(proxyStoreItems), 'ComponentListHandlerBuilder:proxyStoreItems: argument should be a ProxyStore')
-    this.__proxyStoreItems = proxyStoreItems
+  storeItems(storeItems) {
+    assert(TypeCheck.isStoreBase(storeItems), 'ComponentListHandlerBuilder:storeItems: argument should be a StoreBase')
+    assert(storeItems.__type__() === ItemCollection, 'ComponentListHandlerBuilder:storeItems: argument should be a StoreBase of type ItemCollection')
+
+
+    this.__storeItems = storeItems
     return this
   }
 
@@ -123,14 +127,14 @@ export class ComponentListHandlerBuilder {
     assertType(!isNull(this.__application), 'componentContext node should be set')
     assertType(!isNull(this.__parentNode), 'parentNode node should be set')
     assertType(!isNull(this.__idPrefix), 'idPrefix node should be set')
-    assertType(!isNull(this.__proxyStoreItems), 'proxyStoreItems node should be set')
+    assertType(!isNull(this.__storeItems), 'storeItems node should be set')
     assertType(!isNull(this.__viewListHandlerMounter), 'viewListHandlerMounter node should be set')
     return new ComponentListHandlerPublic(
       new ComponentListHandler(
         this.__application.addComponentContext(),
         this.__parentNode,
         this.__viewListHandlerMounter,
-        this.__proxyStoreItems,
+        this.__storeItems,
         this.__idPrefix,
         this.__reconcile
       )

@@ -32,16 +32,14 @@ let proxyStore = new ProxyStoreBuilder()
 let component = new ComponentListHandlerBuilder()
   .application(applicationDev.application())
   .parentNode(applicationDev.layersComponent().addLayer().getElement())
-  .proxyStoreItems(proxyStore)
+  .storeItems(proxyStore)
   .idPrefix('prefix')
   .viewListHandlerMounter(new ViewListHandlerMounter())
   .build()
 
 component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = el})})
 component.onDeleteItem((e) => {e.elements().forEach((el) => component.nodeByID(el).innerHTML = '')})
-
-
-component.nodeByID('param1').innerHTML = 'param1'
+component.apply()
 componentContext.logger().log(
   componentContext.logger().builder()
     .info().pushLog('must have {\'param1\'}'),
