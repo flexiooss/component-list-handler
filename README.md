@@ -10,6 +10,7 @@ let component = new ComponentListHandlerBuilder()
   .storeItems(store)
   .idPrefix('prefix') // to personalize element in dom
   .viewListHandlerMounter(new ViewListHandlerMounter())
+  .reconcile(true) // if false, the list is always refreshed, if true, the list is updated by modifying only what is necessary
   .build()
   ```
 
@@ -39,7 +40,7 @@ component.onDeleteItem((e) => {
 })
   ```
 
-When onCreateItem and onDeleteItem are set, use component.apply() to load the list of items you injected into the component beforehand.
+When onCreateItem and onDeleteItem are set, use ```component.apply()``` to load the list of items you injected into the component beforehand.
 
 callback parameter:
 ```yaml

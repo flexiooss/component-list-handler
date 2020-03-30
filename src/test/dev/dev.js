@@ -35,6 +35,7 @@ let component = new ComponentListHandlerBuilder()
   .storeItems(proxyStore)
   .idPrefix('prefix')
   .viewListHandlerMounter(new ViewListHandlerMounter())
+  .reconcile(true)
   .build()
 
 component.onCreateItem((e) => {e.elements().forEach((el) => {component.nodeByID(el).innerHTML = el})})
